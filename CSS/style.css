@@ -1,0 +1,793 @@
+/* ================================================================
+   1. GLOBALE VARIABLEN & RESET
+================================================================ */
+:root {
+    --bg-main: #050914;
+    --bg-dark: #020617;
+    --card-bg: #0f172a;
+    --card-bg-soft: #111c33;
+
+    --accent: #38bdf8;
+    --accent-hover: #0ea5e9;
+    --accent-soft: rgba(56, 189, 248, 0.14);
+
+    --success: #22c55e;
+    --danger: #ef4444;
+
+    --text-light: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #1e40af;
+
+    --shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+    --glow: 0 0 24px rgba(56, 189, 248, 0.18);
+
+    --radius: 14px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    background:
+        radial-gradient(circle at top, rgba(56, 189, 248, 0.10), transparent 35%),
+        linear-gradient(180deg, #050914, #020617);
+    color: var(--text-light);
+    font-family: "Segoe UI", Roboto, Helvetica, sans-serif;
+}
+
+.hidden {
+    display: none !important;
+}
+
+h1,
+h2,
+h3 {
+    color: #7dd3fc;
+    text-shadow: 0 0 18px rgba(56, 189, 248, 0.18);
+    text-align: center;
+    margin-top: 0;
+}
+
+p {
+    color: var(--text-light);
+}
+
+/* ================================================================
+   2. HAUPTLAYOUT (Sidebar & Content Area)
+================================================================ */
+#main-Layout {
+    display: none;
+    min-height: 100vh;
+    width: 100%;
+    background: var(--bg-main);
+}
+
+#sidebar {
+    width: 250px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(2,6,23,0.98),
+            rgba(10,15,30,0.98)
+        );
+
+    border-right:
+        1px solid rgba(56,189,248,0.18);
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px;
+
+    flex-shrink: 0;
+
+    transition: left 0.3s ease;
+
+    box-shadow:
+        10px 0 30px rgba(0,0,0,0.35);
+}
+
+.sidebar-header {
+    margin-bottom: 10px;
+}
+
+#content-area {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+    min-width: 0;
+}
+
+/* Sidebar Navigation */
+.nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0 0 0;
+    flex-grow: 1;
+}
+
+.nav-item {
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.05rem;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background: rgba(56,189,248,0.12);
+    color: #7dd3fc;
+    box-shadow:
+        inset 4px 0 0 #38bdf8,
+        0 0 18px rgba(56,189,248,0.08);
+    transform: translateX(3px);
+}
+
+.sidebar-footer {
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#user-email-display {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    word-break: break-word;
+}
+
+/* ================================================================
+   3. KALENDER KOMPONENTE
+================================================================ */
+/* ───────────── Monat/Jahr Navigation ───────────── */
+#calendar-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 18px 0 22px 0;
+    gap: 20px;
+}
+
+/* Buttons für Navigation */
+#prevMonth,
+#nextMonth {
+    padding: 8px 16px;
+    border: none;
+    background-color: var(--accent);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    font-size: 1rem;
+}
+
+#prevMonth:hover,
+#nextMonth:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+#month-year {
+    font-size: 1.7rem;
+
+    font-weight: 700;
+
+    color: #7dd3fc;
+
+    letter-spacing: 1px;
+
+    text-shadow:
+        0 0 12px rgba(56,189,248,0.18);
+
+    min-width: 220px;
+
+    text-align: center;
+}
+
+#calendar-container {
+    width: 100%;
+}
+
+#calendar-table {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background-color: var(--card-bg);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+#calendar-table th {
+    background: rgba(56, 189, 248, 0.16);
+    color: var(--accent);
+    padding: 14px;
+    font-size: 0.95rem;
+}
+
+#calendar-table td {
+    padding: 18px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+    border: 1px solid #3d3d5c;
+    min-width: 48px;
+}
+
+#calendar-table td:hover {
+    background-color: rgba(52, 152, 219, 0.25);
+}
+
+.today {
+    background-color: #8d0b0b !important;
+    font-weight: bold;
+    color: white;
+}
+
+.trained {
+    box-shadow: inset 0 0 0 2px var(--success);
+}
+
+#legend {
+    text-align: center;
+    color: var(--text-muted);
+    margin-top: 14px;
+    font-size: 0.95rem;
+}
+
+/* ================================================================
+   4. GYMLOG COMPONENTS (Cards, Inputs, Buttons)
+================================================================ */
+.gym-container {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.gym-card {
+    background: linear-gradient(145deg, #0f172a, #08111f);
+    padding: 24px;
+    border-radius: 18px;
+    box-shadow: var(--shadow), var(--glow);
+    margin-bottom: 24px;
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    border-left: 4px solid var(--accent);
+}
+
+input,
+select {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    margin: 10px 0;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(2,6,23,0.95),
+            rgba(15,23,42,0.95)
+        );
+    border: 1px solid rgba(56,189,248,0.18);
+    color: #f8fafc;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    transition: 0.2s ease;
+    outline: none;
+    box-shadow:
+        inset 0 0 10px rgba(56,189,248,0.04);
+}
+input::placeholder {
+    color: #64748b;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.22);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+/* Button System */
+button {
+    font-family: inherit;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.auth-buttons button {
+    flex: 1;
+    height: 46px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(
+        135deg,
+        #0ea5e9,
+        #2563eb
+    );
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow:
+        0 0 16px rgba(56,189,248,0.18);
+}
+
+.auth-buttons button:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 0 24px rgba(56,189,248,0.28);
+}
+
+.btn-gym-ghost {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 13px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-gym-ghost:hover {
+    background: rgba(52, 152, 219, 0.08);
+    transform: translateY(-1px);
+}
+
+.btn-gym-start {
+    background: var(--success);
+    color: white;
+    font-size: 1.05rem;
+    padding: 15px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+     position: sticky;
+    bottom: 12px;
+    z-index: 50;
+    margin-top: 16px;
+    box-shadow: 0 0 22px rgba(34, 197, 94, 0.28);
+}
+
+.btn-gym-start:hover {
+    transform: translateY(-1px);
+}
+#login-container {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,23,42,0.96),
+            rgba(2,6,23,0.96)
+        );
+
+    border:
+        1px solid rgba(56,189,248,0.18);
+
+    box-shadow:
+        0 0 35px rgba(56,189,248,0.10),
+        0 15px 40px rgba(0,0,0,0.35);
+
+    border-radius: 24px;
+
+    backdrop-filter: blur(12px);
+}
+
+/* ================================================================
+   5. LIVE SESSION SPECIFICS
+================================================================ */
+
+#view-training {
+    padding: 16px;
+}
+
+#training-title {
+    font-size: 1.35rem;
+    margin-bottom: 14px;
+}
+
+#training-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.exercise-block {
+    background: linear-gradient(145deg, #0f172a, #08111f);
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+
+.exercise-block h3 {
+    font-size: 1.05rem;
+    text-align: left;
+    margin: 0 0 10px 0;
+    color: #7dd3fc;
+
+}
+
+.exercise-block > div:first-of-type {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.set-adjust-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(56, 189, 248, 0.16);
+    color: var(--text-light);
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.set-adjust-btn:hover {
+    background: rgba(56, 189, 248, 0.28);
+}
+
+.set-row {
+    display: grid;
+    grid-template-columns: 42px 1fr 1fr 44px;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.set-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.weight-input,
+.reps-input {
+    width: 100%;
+    height: 40px;
+    margin: 0;
+    padding: 0 10px;
+    border-radius: 10px;
+    background: #020617;
+    border: 1px solid rgba(56, 189, 248, 0.24);
+    color: var(--text-light);
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+.weight-input::placeholder,
+.reps-input::placeholder {
+    color: var(--text-muted);
+}
+
+.done-btn {
+    width: 44px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(56, 189, 248, 0.14);
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: 0.2s ease;
+}
+
+.done-btn:hover {
+    background: rgba(56, 189, 248, 0.28);
+}
+
+.done-btn.is-done,
+.is-done {
+    background: var(--success) !important;
+    color: white;
+}
+
+#live-exercise-input {
+    margin: 0;
+}
+
+#view-training > div:first-of-type {
+    display: grid !important;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    margin-bottom: 14px !important;
+}
+
+#view-training > div:first-of-type button {
+    width: auto !important;
+    white-space: nowrap;
+    padding: 0 12px;
+    border-radius: 10px;
+}
+
+.btn-template-cancel {
+    margin-top: 12px;
+    border-color: rgba(56, 189, 248, 0.25);
+    color: #7dd3fc;
+}
+
+.btn-template-cancel:hover {
+    background: rgba(56, 189, 248, 0.08);
+    border-color: rgba(56, 189, 248, 0.45);
+}
+/* ================================================================
+   TEMPLATE AUSWAHL / PLAN LISTE
+================================================================ */
+.template-item {
+    background: linear-gradient(145deg, #0f172a, #08111f);
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    border-radius: 14px;
+
+    padding: 14px 16px;
+    margin-bottom: 12px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+
+    cursor: pointer;
+
+    color: var(--text-light);
+
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+
+    transition: 0.2s ease;
+}
+
+.template-item:hover {
+    transform: translateY(-1px);
+    border-color: rgba(56, 189, 248, 0.45);
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.12);
+}
+
+.template-item span {
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.template-item small {
+    color: #7dd3fc;
+}
+/* ================================================================
+   LIVE SESSION - SMARTPHONE OPTIMIERUNG
+================================================================ */
+@media (max-width: 768px) {
+    .gym-container {
+        max-width: 100%;
+    }
+
+    #view-training {
+        padding: 14px;
+    }
+
+    .exercise-block {
+        padding: 12px;
+        border-radius: 14px;
+    }
+
+    .exercise-block h3 {
+        font-size: 1rem;
+        margin-bottom: 8px;
+    }
+
+    .set-row {
+        grid-template-columns: 36px 1fr 1fr 40px;
+        gap: 6px;
+        padding: 7px 0;
+    }
+
+    .weight-input,
+    .reps-input {
+        height: 38px;
+        font-size: 0.9rem;
+        padding: 0 6px;
+    }
+
+    .done-btn {
+        width: 40px;
+        height: 38px;
+    }
+
+    #view-training > div:first-of-type {
+        grid-template-columns: 1fr;
+    }
+
+    #view-training > div:first-of-type button {
+        width: 100% !important;
+        height: 40px;
+    }
+}
+
+/* ================================================================
+   6. MODALS & POPUPS
+================================================================ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.82);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    padding: 28px;
+    border-radius: 18px;
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    border: 1px solid var(--accent);
+    box-shadow: var(--shadow);
+}
+
+.modal-content h3 {
+    margin-bottom: 20px;
+}
+
+/* ================================================================
+   7. RESPONSIVE DESIGN
+================================================================ */
+#mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 1300;
+    background: var(--accent);
+    border: none;
+    color: white;
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 20px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+   #mobile-menu-btn {
+        display: block;
+    }
+
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        box-shadow: var(--shadow);
+    }
+
+#sidebar.active {
+    transform: translateX(0);
+}
+
+    #content-area {
+        padding: 80px 16px 24px 16px;
+        width: 100%;
+    }
+
+    #calendar-table th,
+    #calendar-table td {
+        padding: 10px 6px;
+        font-size: 0.9rem;
+    }
+
+    #month-year {
+        font-size: 1.2rem;
+    }
+
+    .gym-card {
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .template-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .weight-input,
+    .reps-input {
+        width: 100%;
+    }
+}
+
+/* ================================================================
+   8. HISTORY TABLE
+================================================================ */
+
+
+.history-card {
+    background: var(--card-bg-soft);
+    border: 1px solid #444;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.history-card h3 {
+    margin-bottom: 12px;
+    text-align: left;
+    color: #7dd3fc;
+    text-shadow: 0 0 12px rgba(56,189,248,0.16);
+}
+
+.history-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #333;
+    color: var(--text-light);
+    align-items: center;
+}
+
+.history-row span:nth-child(1) {
+    text-align: left;
+}
+
+.history-row span:nth-child(2),
+.history-row span:nth-child(3) {
+    text-align: center;
+}
+
+/* ================================================================
+   9. FOOTER
+================================================================ */
+.legal-links {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 18px;
+    font-size: 0.85rem;
+    opacity: 0.72;
+    z-index: 100;
+}
+
+.legal-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.legal-links a:hover {
+    color: #7dd3fc;
+}
