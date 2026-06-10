@@ -215,7 +215,7 @@ window.editTemplate = async function(templateName) {
 
 
 /* ================================================================
-   10. Workout löschen
+   10. Workout bearbeiten, starten und löschen
 ================================================================ */
 window.deleteTemplateFromFirebase = async function(templateName) {
     if (!currentUser) {
@@ -241,6 +241,7 @@ window.deleteTemplateFromFirebase = async function(templateName) {
         alert("Workout konnte nicht gelöscht werden.");
     }
 };
+
 window.loadTemplateListForPlansView = async function() {
     const container = document.getElementById("saved-template-list");
     if (!container) return;
@@ -288,7 +289,11 @@ window.loadTemplateListForPlansView = async function() {
                 style="width:auto;">
             Bearbeiten
         </button>
-
+        <button onclick="startLiveSessionFromPlan('${template.name}')"
+            class="btn-gym-ghost"
+            style="width:auto;">
+            Training starten
+        </button>
         <button onclick="deleteTemplateFromFirebase('${template.name}')" 
                 class="btn-gym-ghost"
                 style="width:auto; border-color:#e74c3c; color:#e74c3c;">
