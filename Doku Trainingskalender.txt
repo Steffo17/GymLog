@@ -1,0 +1,126 @@
+Trainingskalender / GymLog – Projektdokumentation
+1. Projektbeschreibung
+
+Der Trainingskalender ist eine Webanwendung zur Planung, Durchführung und Dokumentation von Trainingseinheiten. Nutzer können Trainingstage im Kalender verwalten, Übungen mit Gewicht, Sätzen und Wiederholungen eintragen, Vorlagen verwenden und vergangene Trainingseinheiten einsehen.
+
+Das Projekt wurde als eigenes Web-App-Projekt im Rahmen der Umschulung zum Fachinformatiker Anwendungsentwicklung umgesetzt.
+
+2. Ziel des Projekts
+
+Ziel war die Entwicklung einer übersichtlichen Trainings-App, mit der Nutzer ihre Workouts digital dokumentieren können. Die Anwendung sollte einfach bedienbar sein, Trainingsdaten dauerhaft speichern und eine klare Trennung zwischen Kalenderansicht, Live-Training und Trainingshistorie bieten.
+
+3. Hauptanforderungen
+
+Registrierung und Anmeldung per E-Mail/Passwort
+Login mit Google-Konto
+Kalenderansicht mit Trainingstagen
+Markierung des aktuellen Tages
+Trainingseinheiten pro Datum speichern
+Übungen mit Name, Gewicht, Sätzen und Wiederholungen erfassen
+Training starten und als Live-Session bearbeiten
+Session-Timer zur Messung der Trainingsdauer
+Trainingsdaten in Firebase Firestore speichern
+Vorlagen für Trainingspläne nutzen
+Bereits gespeicherte Trainingsdaten ansehen
+Responsive und übersichtliche Benutzeroberfläche
+
+4. Funktionale Anforderungen
+
+4.1 Benutzerverwaltung
+
+Nutzer können sich anmelden, registrieren und ihre eigenen Trainingsdaten verwalten. Jeder Nutzer sieht nur seine eigenen Daten.
+
+4.2 Kalender
+
+Der Kalender zeigt den aktuellen Monat an. Trainingstage werden farblich hervorgehoben. Über einen Klick auf einen Tag kann eine neue Einheit erstellt oder eine vorhandene Einheit angesehen werden.
+
+4.3 Trainingseinheit
+
+Eine Trainingseinheit besteht aus mehreren Übungen. Jede Übung enthält Angaben zu Gewicht, Sätzen und Wiederholungen.
+
+4.4 Live-Session
+
+Während eines Trainings kann eine Live-Session gestartet werden. Dabei wird die Trainingsdauer gemessen und am Ende zusammen mit den Übungen gespeichert.
+
+4.5 Trainingshistorie
+
+Gespeicherte Trainingseinheiten können später erneut geladen und angesehen werden, ohne automatisch eine neue Live-Session zu starten.
+
+5. Technische Anforderungen
+
+Umsetzung mit HTML, CSS und JavaScript
+Speicherung der Daten mit Firebase Firestore
+Authentifizierung über Firebase Authentication
+Hosting über Firebase Hosting
+Modularisierung des JavaScript-Codes
+Trennung von UI, Datenlogik, Navigation und Training
+Firestore-Sicherheitsregeln, sodass Nutzer nur eigene Daten lesen und schreiben dürfen
+
+6. Datenmodell
+
+Die Trainingsdaten werden nutzerbezogen gespeichert.
+
+Beispielstruktur:
+
+users/{uid}/trainings/{YYYY-MM-DD}
+
+Ein Trainingsdokument enthält:
+
+Datum
+Liste der Übungen
+Trainingsdauer
+Zeitpunkt der letzten Änderung
+
+Eine Übung enthält:
+
+Übungsname
+Gewicht
+Sätze
+Wiederholungen
+
+7. Änderungen während der Entwicklung
+
+Während der Entwicklung wurden mehrere Anpassungen vorgenommen.
+
+Refactoring
+
+Der ursprünglich zusammenhängende JavaScript-Code wurde in mehrere Dateien aufgeteilt, um die Wartbarkeit zu verbessern.
+
+Beispiele:
+
+calendar.js für Kalenderfunktionen
+training.js für Trainingslogik
+ui.js für Anzeigeelemente
+navigation.js für Seitenwechsel
+trainingService.js für Firebase-Zugriffe
+LiveSession.js für laufende Trainingseinheiten
+exerciseUtils.js für Hilfsfunktionen bei Übungen
+Inhaltliche Änderungen
+
+Die Eingabe der Übungen wurde erweitert. Neben dem Übungsnamen können nun auch Gewicht, Sätze und Wiederholungen erfasst werden.
+
+Zusätzlich wurden Übungsvorschläge aus bereits gespeicherten Trainingsdaten ergänzt, damit häufig verwendete Übungen schneller eingegeben werden können.
+
+Bedienungsänderungen
+
+Die Funktion „Daten ansehen“ wurde so angepasst, dass gespeicherte Trainingsdaten nur angezeigt werden und nicht automatisch eine neue Live-Session starten.
+
+Timer-Erweiterung
+
+Für Live-Trainings wurde ein Session-Timer ergänzt. Dadurch kann die Dauer einer Trainingseinheit gemessen und gespeichert werden.
+
+8. Eingesetzte Technologien
+
+HTML
+CSS
+JavaScript
+Firebase Authentication
+Firebase Firestore
+Firebase Hosting
+Git/GitHub
+
+9. Ergebnis
+
+Das Ergebnis ist eine funktionsfähige Web-App zur digitalen Trainingsdokumentation. Die Anwendung ermöglicht das Planen, Starten, Speichern und spätere Anzeigen von Trainingseinheiten.
+
+Durch das Refactoring wurde der Code übersichtlicher und besser erweiterbar. Die App kann zukünftig um weitere Funktionen wie Statistiken, Diagramme, Gastmodus oder exportierbare Trainingsberichte erweitert werden.
