@@ -78,24 +78,9 @@ export function initAuth() {
                 window.showView("home-view");
             }
 
-            } else {
+           } else {
                 document.getElementById("login-modal").style.display = "none";
                 document.getElementById("main-Layout").style.display = "flex";
-
-                const calendarBody = document.querySelector("#calendar-table tbody");
-                if (calendarBody) {
-                    calendarBody.innerHTML = "";
-                }
-
-                const historyDetailArea = document.getElementById("history-detail-area");
-                if (historyDetailArea) {
-                    historyDetailArea.style.display = "none";
-                }
-
-                const historyContent = document.getElementById("history-content");
-                if (historyContent) {
-                    historyContent.innerHTML = "";
-                }
 
                 const userDisplay = document.getElementById("user-email-display");
                 if (userDisplay) {

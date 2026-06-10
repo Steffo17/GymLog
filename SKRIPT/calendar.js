@@ -20,6 +20,7 @@ const today = new Date();
 ================================================================ */
 export async function initCalendar() {
     console.log("Kalender wird initialisiert...");
+    Object.keys(trainingDays).forEach(key => delete trainingDays[key]);
 
     /* ================= TRAININGSTAGE LADEN ================= */
     if (currentUser) {
