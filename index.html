@@ -20,6 +20,7 @@
    2. LOGIN BEREICH
    - Einstiegspunkt für Nutzer
 ================================================================ -->
+<div id="login-modal" class="modal-overlay" style="display:none;">
     <div id="login-container">
         <h2>Willkommen bei GymLog</h2>
 
@@ -63,7 +64,7 @@
             </button>
         </div>
     </div>
-
+</div>
     <!-- ================================================================
        3. HAUPT-LAYOUT (nach Login sichtbar)
        - Sidebar Navigation + Content Bereich
@@ -90,12 +91,10 @@
             <div id="topbar">
                 <span id="user-email-display"></span>
 
-                <button
-                    class="topbar-btn"
-                    onclick="showView('settings-view')"
-                >
-                    ⚙️
+                <button id="show-login-btn" class="topbar-login-btn">
+                    Login
                 </button>
+                <button id="logout-btn-sidebar" class="topbar-login-btn">Logout</button>
             </div>
 
             <section id="home-view" class="view active">
@@ -270,29 +269,6 @@
                         <button onclick="confirmCancelSession()" class="btn-gym-ghost" style="margin-top:10px;">
                             ❌ Training abbrechen
                         </button>
-                    </div>
-                </div>
-            </section>
-            <section id="settings-view" class="view" style="display:none;">
-                <div class="gym-card">
-
-                    <h1>Einstellungen</h1>
-
-                    <p id="settings-user-email"></p>
-
-                    <button id="logout-btn-sidebar" class="btn-gym-ghost"> 
-                       Logout
-                    </button>
-                    <button onclick="cleanWorkoutExercises()" class="btn-gym-ghost" style="margin-top:10px;">
-    Übungen bereinigen
-</button>
-                    <div class="settings-links">
-                        <a href="impressum.html" class="btn-gym-ghost">
-                            Impressum
-                        </a>
-                        <a href="datenschutz.html" class="btn-gym-ghost">
-                            Datenschutz
-                        </a>
                     </div>
                 </div>
             </section>

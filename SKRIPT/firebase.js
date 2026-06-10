@@ -66,7 +66,7 @@ export function initAuth() {
         currentUser = user;
 
         if (user) {
-            document.getElementById("login-container").style.display = "none";
+            document.getElementById("login-modal").style.display = "none";
             document.getElementById("main-Layout").style.display = "flex";
             document.getElementById("user-email-display").textContent =
                 "angemeldet als: " + user.email;
@@ -79,7 +79,7 @@ export function initAuth() {
             }
 
             } else {
-            document.getElementById("login-container").style.display = "block";
+            document.getElementById("login-modal").style.display = "none";
             document.getElementById("main-Layout").style.display = "flex";
 
             const userDisplay = document.getElementById("user-email-display");

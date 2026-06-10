@@ -21,6 +21,21 @@ document.addEventListener("DOMContentLoaded", () => {
     initLiveSession();
     initCalendar();
 
+   const showLoginBtn = document.getElementById("show-login-btn");
+   const loginModal = document.getElementById("login-modal");
+
+   if (showLoginBtn && loginModal) {
+      showLoginBtn.addEventListener("click", () => {
+         loginModal.style.display = "flex";
+      });
+
+      loginModal.addEventListener("click", (e) => {
+         if (e.target === loginModal) {
+               loginModal.style.display = "none";
+         }
+      });
+   }
+
     window.addEventListener("auth-state-ready", () => {
         initCalendar();
 
