@@ -43,6 +43,9 @@
             <button id="google-btn" class="btn-gym-ghost">
                 Mit Google anmelden
             </button>
+            <button id="guest-mode-btn" class="btn-gym-ghost" style="margin-top:10px;">
+                Ohne Anmeldung fortfahren
+            </button>
         </div>
 
         <!-- REGISTER FORM -->
@@ -61,60 +64,56 @@
         </div>
     </div>
 
-    <footer class="legal-links">
-        <a href="impressum.html">Impressum</a>
-        <a href="datenschutz.html">Datenschutz</a>
-    </footer>
-
     <!-- ================================================================
        3. HAUPT-LAYOUT (nach Login sichtbar)
        - Sidebar Navigation + Content Bereich
     ================================================================ -->
     <div id="main-Layout" style="display:none;">
 
-        <!-- Mobile Menü Button -->
-        <button id="mobile-menu-btn">☰</button>
 
-        <!-- ================================================================
-           3.1 SIDEBAR NAVIGATION
-        ================================================================ -->
-        <nav id="sidebar">
-
-            <!-- Logo / Header -->
-            <div class="sidebar-header">
-                <h2 style="color: #38bdf8; margin-left: 10px;">GymLog</h2>
-            </div>
-
-            <!-- Navigationspunkte -->
-            <ul class="nav-links">
-                <li class="nav-item active" data-view="calendar-view">
-                    <span class="icon">📅</span> Kalender
-                </li>
-                <li class="nav-item" data-view="plans-view">
-                    <span class="icon">📋</span> Workout-Vorlagen
-                </li>
-
-            </ul>
-
-            <!-- Benutzerinfo + Logout -->
-            <div class="sidebar-footer">
-                <span id="user-email-display"></span>
-                <button id="logout-btn-sidebar" class="btn-gym-ghost">Logout</button>
-            </div>
-        </nav>
-
+<!-- ================================================================
+   3.1 BOTTOM NAVIGATION SMARTPHONE
+================================================================ -->
+<nav id="bottom-nav">
+    <button class="bottom-nav-item active" data-view="home-view">🏠<span>Start</span></button>
+    <button class="bottom-nav-item" data-view="calendar-view">📅<span>Kalender</span></button>
+    <button class="bottom-nav-item" data-view="plans-view">📋<span>Vorlagen</span></button>
+    <button class="bottom-nav-item" data-view="live-view">⚡<span>Training</span></button>
+</nav>
 
         <!-- ================================================================
            3.2 CONTENT AREA
            - Hier werden die verschiedenen Views geladen
         ================================================================ -->
         <main id="content-area">
+                    <!-- TOPBAR -->
+            <div id="topbar">
+                <span id="user-email-display"></span>
 
+                <button
+                    class="topbar-btn"
+                    onclick="showView('settings-view')"
+                >
+                    ⚙️
+                </button>
+            </div>
+
+            <section id="home-view" class="view active">
+                <div class="gym-card">
+                    <h1>Willkommen in deinem persönlichen GymLog!</h1>
+                    <p>Diese App wurde programmiert, um ohne viel Schnickschnack deinen Trainingserfolg zu speichern.</p>
+                    <p>Übungen und Pläne werden von dir selbst hinzugefügt und gespeichert.</p>
+                    <p>Im Trainingskalender siehst du deine History der vergangenen Trainingseinheiten mit allen Informationen.</p>
+                    <p>Das soll dich motivieren, deinen Fortschritt sichtbar machen und dir zeigen, was dein letzter Stand bei den Übungen war.</p>
+                    <p>Unten in der Leiste findest du deinen Trainingskalender, deine Workout-Vorlagen und dein aktives Training.</p>
+                    <h2>Viel Spaß beim Trainieren!</h2>
+                </div>
+            </section>
             <!-- ================================================================
                4. KALENDER VIEW
                - Trainingsübersicht nach Datum
             ================================================================ -->
-            <section id="calendar-view" class="view active">
+            <section id="calendar-view" class="view" style="display:none;">
                 <h1>Dein Kalender</h1>
 
                 <!-- Monatsnavigation -->
@@ -162,7 +161,7 @@
 
                 <!-- ================= WORKOUT NAME STEP ================= -->
                 <div id="plan-setup" class="gym-card">
-                    <label>Gib hier ein Workout ein:</label>
+                    <label>Gib hier ein neues Workout ein:</label>
 
                     <input type="text" id="plan-name-input" class="gym-input" placeholder="z.B. Brust">
 
@@ -179,6 +178,7 @@
                     <ul id="template-list" class="planned-list"></ul>
 
                     <input type="text" id="new-template-exercise" class="gym-input" placeholder="Neue Übung...">
+                    <div id="exercise-suggestions"></div>
 
                     <button onclick="addExerciseToTemplateList()" class="btn-gym-ghost">
                         Übung hinzufügen
@@ -270,6 +270,29 @@
                         <button onclick="confirmCancelSession()" class="btn-gym-ghost" style="margin-top:10px;">
                             ❌ Training abbrechen
                         </button>
+                    </div>
+                </div>
+            </section>
+            <section id="settings-view" class="view" style="display:none;">
+                <div class="gym-card">
+
+                    <h1>Einstellungen</h1>
+
+                    <p id="settings-user-email"></p>
+
+                    <button id="logout-btn-sidebar" class="btn-gym-ghost"> 
+                       Logout
+                    </button>
+                    <button onclick="cleanWorkoutExercises()" class="btn-gym-ghost" style="margin-top:10px;">
+    Übungen bereinigen
+</button>
+                    <div class="settings-links">
+                        <a href="impressum.html" class="btn-gym-ghost">
+                            Impressum
+                        </a>
+                        <a href="datenschutz.html" class="btn-gym-ghost">
+                            Datenschutz
+                        </a>
                     </div>
                 </div>
             </section>

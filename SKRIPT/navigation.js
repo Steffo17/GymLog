@@ -3,30 +3,20 @@
    - Sidebar, Mobile Menu und View-Wechsel
 ================================================================ */
 export function initNavigation() {
-    const sidebar = document.getElementById("sidebar");
-    const menuBtn = document.getElementById("mobile-menu-btn");
-
-    menuBtn?.addEventListener("click", () => {
-        sidebar?.classList.toggle("active");
-    });
-
-    document.querySelectorAll(".nav-item").forEach(item => {
+    document.querySelectorAll(".bottom-nav-item").forEach(item => {
         item.addEventListener("click", () => {
             const viewId = item.getAttribute("data-view");
             showView(viewId);
 
-            document.querySelectorAll(".nav-item").forEach(nav => {
+            document.querySelectorAll(".bottom-nav-item").forEach(nav => {
                 nav.classList.remove("active");
             });
 
             item.classList.add("active");
-
-            if (window.innerWidth <= 768) {
-                sidebar?.classList.remove("active");
-            }
         });
     });
 }
+
 
 /* ================================================================
    2. VIEW MANAGEMENT
@@ -56,11 +46,11 @@ window.showView = showView;
 window.openPlansView = function() {
     showView("plans-view");
 
-    document.querySelectorAll(".nav-item").forEach(nav => {
+    document.querySelectorAll(".bottom-nav-item").forEach(nav => {
         nav.classList.remove("active");
     });
 
-    const plansNav = document.querySelector('.nav-item[data-view="plans-view"]');
+    const plansNav = document.querySelector('.bottom-nav-item[data-view="plans-view"]');
     if (plansNav) {
         plansNav.classList.add("active");
     }

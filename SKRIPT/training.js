@@ -3,8 +3,8 @@
    - User State + Service Layer
 ================================================================ */
 import { currentUser } from "./firebase.js";
-import { fetchExercises, saveExercisesToDB } from "./trainingService.js";
-
+import { fetchExercises, saveExercisesToDB, fetchUsedExercises } from "./trainingService.js";
+import { normalizeExerciseName } from "./exerciseUtils.js";
 
 /* ================================================================
    2. GLOBAL STATE
@@ -20,7 +20,6 @@ export function setSelectedDate(year, month, day) {
     selectedDateId = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
-
 /* ================================================================
    4. ÜBUNGEN LADEN
    - Holt Daten über den Service
@@ -35,7 +34,9 @@ export async function loadExercises() {
         exercise: item.exercise ?? item.name ?? "",
         weight: item.weight ?? "",
         set: item.set ?? item.sets ?? "",
-        reps: item.reps ?? ""
+        reps: item.reps ?? "",
+        durationMS: item.durationMs ?? 0,
+        durationText: item.durationText ?? ""
     }));
 }
 
@@ -83,8 +84,9 @@ export async function getLastExerciseData(exerciseName) {
 
         const exercises = await fetchExercises(currentUser.uid, dateId);
 
-        const matching = exercises.filter(
-            item => item.exercise === exerciseName
+        const searchKey = normalizeExerciseName(exerciseName);
+        const matching = exercises.filter(item =>
+            normalizeExerciseName(item.exercise) === searchKey
         );
 
         if (matching.length > 0) {
@@ -95,4 +97,12 @@ export async function getLastExerciseData(exerciseName) {
     }
 
     return null;
+}
+/* ================================================================
+   8. Übungen vorschlagen
+   - Basierend auf bisherigen Einträgen
+================================================================ */
+export async function loadUsedExercises() {
+    if (!currentUser) return [];
+    return await fetchUsedExercises(currentUser.uid);
 }

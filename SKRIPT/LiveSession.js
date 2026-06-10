@@ -4,8 +4,42 @@
 ================================================================ */
 import { loadAllTemplates } from "./templates.js";
 import { saveExercises, getLastExerciseData } from "./training.js";
+import { formatExerciseName } from "./exerciseUtils.js";
 let currentExercises = [];
 let workoutTitle = "";
+let sessionStartTime = null;
+let sessionTimerInterval = null;
+
+function startSessionTimer() {
+    if (sessionTimerInterval) return;
+
+    sessionStartTime = Date.now();
+
+    const display = document.getElementById("live-timer-display");
+    const button = document.getElementById("live-timer-start-btn");
+
+    if (button) button.disabled = true;
+
+    const updateTimer = () => {
+        if (display) {
+            display.innerText = formatDuration(Date.now() - sessionStartTime);
+        }
+    };
+
+    updateTimer();
+
+    sessionTimerInterval = setInterval(updateTimer, 1000);
+}
+
+function formatDuration(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+
+    const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+    const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+    const seconds = String(totalSeconds % 60).padStart(2, "0");
+
+    return `${hours}:${minutes}:${seconds}`;
+}
 
 
 /* ================================================================
@@ -154,46 +188,58 @@ function removeEx(i) {
    9. TRAINING STARTEN
    - Baut die Live-Trainingsansicht dynamisch auf
 ================================================================ */
+async function createExerciseBlock(exerciseName, exIndex) {
+    const block = document.createElement("div");
+    block.className = "exercise-block";
+
+    const setsHTML = await renderSetsHTML(3, exerciseName);
+
+    block.innerHTML = `
+        <h3>${exerciseName}</h3>
+
+        <div style="text-align:right">
+            Sätze:
+            <button class="set-adjust-btn" onclick="adjustSets(${exIndex}, -1)">-</button>
+
+            <strong id="count-${exIndex}">3</strong>
+
+            <button class="set-adjust-btn" onclick="adjustSets(${exIndex}, 1)">+</button>
+        </div>
+
+        <div
+            id="sets-container-${exIndex}"
+            data-exercise="${exerciseName}"
+        >
+            ${setsHTML}
+        </div>
+    `;
+
+    return block;
+}
+
 async function startTraining() {
+    
 
     const container = document.getElementById("training-container");
     if (!container) return;
 
     document.getElementById("training-title").innerText = workoutTitle;
 
-    container.innerHTML = "";
+    container.innerHTML = `
+        <div class="live-timer-box">
+            <button id="live-timer-start-btn" onclick="startSessionTimer()">
+                Training starten
+            </button>
+            <p>Vergangene Zeit: <strong id="live-timer-display">00:00:00</strong></p>
+        </div>`;
+
 
     for (const [exIndex, ex] of currentExercises.entries()) {
 
-        const block = document.createElement("div");
-        block.className = "exercise-block";
+    const block = await createExerciseBlock(ex, exIndex);
+    container.appendChild(block);
 
-        const setsHTML = await renderSetsHTML(3, ex);
-
-        block.innerHTML = `
-            <h3>${ex}</h3>
-
-            <div style="text-align:right">
-                Sätze:
-                <button class="set-adjust-btn" onclick="adjustSets(${exIndex}, -1)">-</button>
-
-                <strong id="count-${exIndex}">3</strong>
-
-                <button class="set-adjust-btn" onclick="adjustSets(${exIndex}, 1)">+</button>
-            </div>
-
-            <div
-                id="sets-container-${exIndex}"
-                data-exercise="${ex}"
-            >
-                ${setsHTML}
-            </div>
-        `;
-
-        container.appendChild(block);
-    }
-
-    showGymView("view-training");
+    showGymView("view-training");}
 }
 
 
@@ -304,7 +350,7 @@ async function adjustSets(idx, delta) {
 }
 
 /* ================================================================
-   12. SESSION BEENDEN
+   12. Live-Übung hinzufügen
    - Setzt die Live-Session zurück
 ================================================================ */
 async function addExerciseLive() {
@@ -323,31 +369,7 @@ async function addExerciseLive() {
 
     const exIndex = document.querySelectorAll(".exercise-block").length;
 
-    const block = document.createElement("div");
-    block.className = "exercise-block";
-
-    const setsHTML = await renderSetsHTML(3, exerciseName);
-
-    block.innerHTML = `
-        <h3>${exerciseName}</h3>
-
-        <div style="text-align:right">
-            Sätze:
-            <button class="set-adjust-btn" onclick="adjustSets(${exIndex}, -1)">-</button>
-
-            <strong id="count-${exIndex}">3</strong>
-
-            <button class="set-adjust-btn" onclick="adjustSets(${exIndex}, 1)">+</button>
-        </div>
-
-        <div
-            id="sets-container-${exIndex}"
-            data-exercise="${exerciseName}"
-        >
-            ${setsHTML}
-        </div>
-    `;
-
+    const block = await createExerciseBlock(exerciseName, exIndex);
     container.appendChild(block);
 
     currentExercises.push(exerciseName);
@@ -361,6 +383,8 @@ async function addExerciseLive() {
 async function finishSession() {
     const allExerciseContainers = document.querySelectorAll("[id^='sets-container-']");
     const sessionData = [];
+    const durationMs = sessionStartTime ? Date.now() - sessionStartTime : 0;
+    const durationText = formatDuration(durationMs);
 
     allExerciseContainers.forEach(container => {
         const exerciseName = container.dataset.exercise;
@@ -378,10 +402,12 @@ async function finishSession() {
 
             sessionData.push({
                 workout: workoutTitle,
-                exercise: exerciseName,
+                exercise: formatExerciseName(exerciseName),
                 weight: weightInput ? Number(weightInput.value) || 0 : 0,
                 set: Number(row.dataset.set) || 0,
-                reps: repsInput ? Number(repsInput.value) || 0 : 0
+                reps: repsInput ? Number(repsInput.value) || 0 : 0,
+                durationMs,
+                durationText
             });
         });
     });
@@ -397,6 +423,9 @@ async function finishSession() {
 
         currentExercises = [];
         workoutTitle = "";
+        clearInterval(sessionTimerInterval);
+        sessionTimerInterval = null;
+        sessionStartTime = null;
         showGymView("view-main");
 
         location.reload();
@@ -419,6 +448,9 @@ function cancelSession() {
     // Session zurücksetzen
     currentExercises = [];
     workoutTitle = "";
+    clearInterval(sessionTimerInterval);
+    sessionTimerInterval = null;
+    sessionStartTime = null;
 
     // UI zurücksetzen
     showGymView("view-main");
@@ -444,6 +476,7 @@ export function initLiveSession() {
     window.confirmCancelSession = confirmCancelSession;
     window.closeCancelModal = closeCancelModal;
     window.cancelSession = cancelSession;
+    window.startSessionTimer = startSessionTimer;
 }
 
 

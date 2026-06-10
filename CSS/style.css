@@ -55,98 +55,57 @@ p {
 }
 
 /* ================================================================
-   2. HAUPTLAYOUT (Sidebar & Content Area)
+   2. HAUPTLAYOUT (Bottom bar & Content Area)
 ================================================================ */
 #main-Layout {
-    display: none;
     min-height: 100vh;
     width: 100%;
     background: var(--bg-main);
-}
-
-#sidebar {
-    width: 250px;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(2,6,23,0.98),
-            rgba(10,15,30,0.98)
-        );
-
-    border-right:
-        1px solid rgba(56,189,248,0.18);
-
-    display: flex;
-    flex-direction: column;
-
-    padding: 20px;
-
-    flex-shrink: 0;
-
-    transition: left 0.3s ease;
-
-    box-shadow:
-        10px 0 30px rgba(0,0,0,0.35);
-}
-
-.sidebar-header {
-    margin-bottom: 10px;
+    overflow: hidden;
 }
 
 #content-area {
     flex: 1;
     padding: 40px;
+    padding-bottom: 100px;
     overflow-y: auto;
     min-width: 0;
+    width: 100%;
 }
 
-/* Sidebar Navigation */
-.nav-links {
-    list-style: none;
-    padding: 0;
-    margin: 30px 0 0 0;
-    flex-grow: 1;
+#bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 68px;
+    background: rgba(2,6,23,0.96);
+    border-top: 1px solid rgba(56,189,248,0.22);
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1500;
+    backdrop-filter: blur(12px);
 }
-
-.nav-item {
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    border-radius: 12px;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+.bottom-nav-item {
+    background: transparent;
+    border: none;
     color: var(--text-muted);
     display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.05rem;
-}
-
-.nav-item:hover,
-.nav-item.active {
-    background: rgba(56,189,248,0.12);
-    color: #7dd3fc;
-    box-shadow:
-        inset 4px 0 0 #38bdf8,
-        0 0 18px rgba(56,189,248,0.08);
-    transform: translateX(3px);
-}
-
-.sidebar-footer {
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
-    display: flex;
     flex-direction: column;
-    gap: 10px;
+    align-items: center;
+    gap: 4px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    width: 25%;
 }
-
-#user-email-display {
-    color: #94a3b8;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-    word-break: break-word;
+.bottom-nav-item span {
+    font-size: 0.75rem;
 }
-
+.bottom-nav-item.active {
+    color: #7dd3fc;
+    text-shadow: 0 0 12px rgba(56,189,248,0.25);
+}
 /* ================================================================
    3. KALENDER KOMPONENTE
 ================================================================ */
@@ -581,54 +540,25 @@ button {
 .template-item small {
     color: #7dd3fc;
 }
-/* ================================================================
-   LIVE SESSION - SMARTPHONE OPTIMIERUNG
-================================================================ */
-@media (max-width: 768px) {
-    .gym-container {
-        max-width: 100%;
-    }
 
-    #view-training {
-        padding: 14px;
-    }
-
-    .exercise-block {
-        padding: 12px;
-        border-radius: 14px;
-    }
-
-    .exercise-block h3 {
-        font-size: 1rem;
-        margin-bottom: 8px;
-    }
-
-    .set-row {
-        grid-template-columns: 36px 1fr 1fr 40px;
-        gap: 6px;
-        padding: 7px 0;
-    }
-
-    .weight-input,
-    .reps-input {
-        height: 38px;
-        font-size: 0.9rem;
-        padding: 0 6px;
-    }
-
-    .done-btn {
-        width: 40px;
-        height: 38px;
-    }
-
-    #view-training > div:first-of-type {
-        grid-template-columns: 1fr;
-    }
-
-    #view-training > div:first-of-type button {
-        width: 100% !important;
-        height: 40px;
-    }
+#exercise-suggestions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+}
+.exercise-suggestion {
+    background: rgba(15,23,42,0.96);
+    border: 1px solid rgba(56,189,248,0.18);
+    color: #e2e8f0;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+.exercise-suggestion:hover {
+    background: rgba(56,189,248,0.08);
+    border-color: rgba(56,189,248,0.35);
 }
 
 /* ================================================================
@@ -659,77 +589,8 @@ button {
 .modal-content h3 {
     margin-bottom: 20px;
 }
-
 /* ================================================================
-   7. RESPONSIVE DESIGN
-================================================================ */
-#mobile-menu-btn {
-    display: none;
-    position: fixed;
-    top: 14px;
-    left: 14px;
-    z-index: 1300;
-    background: var(--accent);
-    border: none;
-    color: white;
-    padding: 12px 14px;
-    border-radius: 10px;
-    font-size: 20px;
-    box-shadow: var(--shadow);
-    cursor: pointer;
-}
-
-@media (max-width: 768px) {
-   #mobile-menu-btn {
-        display: block;
-    }
-
-    #sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-        transform: translateX(-100%);
-        box-shadow: var(--shadow);
-    }
-
-#sidebar.active {
-    transform: translateX(0);
-}
-
-    #content-area {
-        padding: 80px 16px 24px 16px;
-        width: 100%;
-    }
-
-    #calendar-table th,
-    #calendar-table td {
-        padding: 10px 6px;
-        font-size: 0.9rem;
-    }
-
-    #month-year {
-        font-size: 1.2rem;
-    }
-
-    .gym-card {
-        padding: 18px;
-        border-radius: 14px;
-    }
-
-    .template-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .weight-input,
-    .reps-input {
-        width: 100%;
-    }
-}
-
-/* ================================================================
-   8. HISTORY TABLE
+   7. HISTORY CARDS
 ================================================================ */
 
 
@@ -768,26 +629,147 @@ button {
 }
 
 /* ================================================================
-   9. FOOTER
+   8. Topbar (User Info & Settings)
 ================================================================ */
-.legal-links {
-    position: fixed;
-    bottom: 18px;
-    left: 50%;
-    transform: translateX(-50%);
+#topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
     display: flex;
-    gap: 18px;
-    font-size: 0.85rem;
-    opacity: 0.72;
-    z-index: 100;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0 20px 0;
+    background: linear-gradient(180deg, rgba(5,9,20,0.96), transparent);
+    backdrop-filter: blur(10px);
 }
-
-.legal-links a {
+#user-email-display {
     color: var(--text-muted);
-    text-decoration: none;
+    font-size: 0.9rem;
+}
+.topbar-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    border: 1px solid rgba(56,189,248,0.22);
+    background: rgba(15,23,42,0.92);
+    color: #7dd3fc;
+    cursor: pointer;
+    font-size: 1rem;
     transition: 0.2s ease;
 }
-
-.legal-links a:hover {
-    color: #7dd3fc;
+.topbar-btn:hover {
+    background: rgba(56,189,248,0.12);
+}
+.settings-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+.settings-links a {
+    text-decoration: none;
+    text-align: center;
+}
+/* ================================================================
+   10. SMARTPHONE DESIGN
+================================================================ */
+@media (max-width: 768px) {
+    #content-area {
+        padding: 80px 16px 96px 16px;
+        width: 100%;
+    }
+    .gym-container {
+        max-width: 100%;
+    }
+    .gym-card {
+        padding: 18px;
+        border-radius: 14px;
+    }
+    #calendar-table th,
+    #calendar-table td {
+        padding: 10px 6px;
+        font-size: 0.9rem;
+    }
+    #month-year {
+        font-size: 1.2rem;
+        min-width: 150px;
+    }
+    .template-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    #view-training {
+        padding: 14px;
+    }
+    .exercise-block {
+        padding: 12px;
+        border-radius: 14px;
+    }
+    .exercise-block h3 {
+        font-size: 1rem;
+        margin-bottom: 8px;
+    }
+    .set-row {
+        grid-template-columns: 36px 1fr 1fr 40px;
+        gap: 6px;
+        padding: 7px 0;
+    }
+    .weight-input,
+    .reps-input {
+        height: 38px;
+        font-size: 0.9rem;
+        padding: 0 6px;
+    }
+    .done-btn {
+        width: 40px;
+        height: 38px;
+    }
+    #view-training > div:first-of-type {
+        grid-template-columns: 1fr;
+    }
+    #view-training > div:first-of-type button {
+        width: 100% !important;
+        height: 40px;
+    }
+    #topbar {
+    padding: max(18px, env(safe-area-inset-top)) 4px 14px 4px;
+    gap: 8px;
+    }
+    #user-email-display {
+        font-size: 0.78rem;
+        max-width: 230px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .topbar-btn {
+        width: 38px;
+        height: 38px;
+        min-width: 38px;
+        padding: 0;
+        appearance: none;
+        -webkit-appearance: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    #settings-view .gym-card {
+        padding: 20px;
+    }
+    #settings-view h1 {
+        font-size: 2rem;
+        margin-bottom: 24px;
+    }
+    .settings-links {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 14px;
+    }
+    .settings-links a {
+        width: 100%;
+        text-align: center;
+        text-decoration: none;
+    }
 }

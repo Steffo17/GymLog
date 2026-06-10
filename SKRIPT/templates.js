@@ -1,4 +1,6 @@
 import { db, currentUser } from "./firebase.js";
+import { loadUsedExercises } from "./training.js";
+import { normalizeExerciseName, formatExerciseName } from "./exerciseUtils.js";
 import {
     doc,
     deleteDoc,
@@ -10,7 +12,6 @@ import {
 
 let currentTemplateExercises = [];
 let currentWorkoutName = "";
-
 
 /* ================================================================
    1. WORKOUT BESTÄTIGEN
@@ -39,15 +40,26 @@ window.confirmWorkoutName = function() {
 ================================================================ */
 window.addExerciseToTemplateList = function() {
     const input = document.getElementById("new-template-exercise");
-
     if (!input || !input.value.trim()) return;
 
-    currentTemplateExercises.push(input.value.trim());
+    const newExercise = formatExerciseName(input.value);
+    const newExerciseNormalized = normalizeExerciseName(newExercise);
+
+    const exists = currentTemplateExercises.some(ex =>
+        normalizeExerciseName(ex) === newExerciseNormalized
+    );
+
+    if (exists) {
+        alert("Diese Übung ist in diesem Workout bereits vorhanden.");
+        input.value = "";
+        return;
+    }
+
+    currentTemplateExercises.push(newExercise);
     input.value = "";
 
     renderTemplateList();
 };
-
 
 /* ================================================================
    3. LISTE RENDERN
@@ -292,3 +304,105 @@ window.loadTemplateListForPlansView = async function() {
         container.innerHTML = "<p>Fehler beim Laden der Workouts.</p>";
     }
 };
+
+/* ================================================================
+   11. ÜBUNGSVORSCHLÄGE
+================================================================ */
+let usedExerciseSuggestions = [];
+
+    export async function initExerciseSuggestions() {
+
+        const loadedExercises = await loadUsedExercises();
+    const uniqueMap = new Map();
+
+    loadedExercises.forEach(ex => {
+        const key = normalizeExerciseName(ex);
+        if (!uniqueMap.has(key)) {
+            uniqueMap.set(key, formatExerciseName(ex));
+        }
+    });
+
+    usedExerciseSuggestions = Array.from(uniqueMap.values()).sort();
+
+    console.log("Geladene Vorschläge:", usedExerciseSuggestions);
+
+    const input = document.getElementById("new-template-exercise");
+    const suggestionBox = document.getElementById("exercise-suggestions");
+
+    if (!input || !suggestionBox) return;
+
+    input.addEventListener("input", () => {
+
+        const value = input.value.toLowerCase().trim();
+
+        suggestionBox.innerHTML = "";
+
+        if (!value) return;
+
+        const matches = usedExerciseSuggestions.filter(exercise =>
+            exercise.toLowerCase().includes(value)
+        );
+
+        matches.slice(0, 6).forEach(exercise => {
+
+    const div = document.createElement("div");
+
+    div.className = "exercise-suggestion";
+
+    div.style.display = "flex";
+    div.style.justifyContent = "space-between";
+    div.style.alignItems = "center";
+
+    div.innerHTML = `
+        <span>${exercise}</span>
+
+        <button
+            type="button"
+            style="
+                background:none;
+                border:none;
+                color:#e74c3c;
+                cursor:pointer;
+                font-size:16px;
+            "
+        >
+            ✕
+        </button>
+    `;
+
+    // Vorschlag auswählen
+    div.querySelector("span").onclick = () => {
+        input.value = exercise;
+        suggestionBox.innerHTML = "";
+    };
+
+    // Vorschlag ausblenden
+    div.querySelector("button").onclick = async (e) => {
+        e.stopPropagation();
+
+        await hideExerciseSuggestion(
+            normalizeExerciseName(exercise)
+        );
+
+        div.remove();
+    };
+
+    suggestionBox.appendChild(div);
+});
+    });
+    window.hideExerciseSuggestion = async function(exerciseKey) {
+    if (!currentUser) return;
+
+    await setDoc(
+        doc(db, "users", currentUser.uid, "hiddenExercises", exerciseKey),
+        { hidden: true }
+    );
+
+    usedExerciseSuggestions = usedExerciseSuggestions.filter(ex =>
+        normalizeExerciseName(ex) !== exerciseKey
+    );
+
+    document.getElementById("exercise-suggestions").innerHTML = "";
+};
+}
+

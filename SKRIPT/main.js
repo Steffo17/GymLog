@@ -7,6 +7,7 @@ import { initAuth, initAuthUI } from "./firebase.js";
 import { initCalendar } from "./calendar.js";
 import { initUI } from "./ui.js";
 import { initLiveSession } from "./LiveSession.js";
+import { initExerciseSuggestions } from "./templates.js";
 
 
 /* ================================================================
@@ -26,5 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
            if (typeof window.loadTemplateListForPlansView === "function") {
         window.loadTemplateListForPlansView();
            }
+         initExerciseSuggestions();
     });
 });

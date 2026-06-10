@@ -7,6 +7,7 @@ import {
     selectedDateId,
     deleteExercisesForSelectedDate
 } from "./training.js";
+import { normalizeExerciseName, formatExerciseName } from "./exerciseUtils.js";
 
 
 /* ================================================================
@@ -53,25 +54,31 @@ window.showHistoryDetails = async function() {
 
 // Daten nach Übung gruppieren
 data.forEach(item => {
-    const key = item.exercise || "Unbekannt";
-
+    const displayName = formatExerciseName(item.exercise || "Unbekannt");
+    const key = normalizeExerciseName(displayName);
     if (!grouped[key]) {
-        grouped[key] = [];
+        grouped[key] = {
+            name: displayName,
+            sets: []
+        };
     }
-
-    grouped[key].push(item);
+    grouped[key].sets.push(item);
 });
 
 let html = "";
+const durationText = data[0]?.durationText || "";
+if (durationText) {
+    html += `<p><strong>Trainingsdauer:</strong> ${durationText}</p>`;
+}
 
 // Cards bauen
-Object.keys(grouped).forEach(exercise => {
+Object.values(grouped).forEach(group => {
     html += `
         <div class="history-card">
-            <h3>${exercise}</h3>
+            <h3>${group.name}</h3>
     `;
 
-    grouped[exercise].forEach(set => {
+    group.sets.forEach(set => {
         html += `
             <div class="history-row">
                 <span>Satz ${set.set}</span>

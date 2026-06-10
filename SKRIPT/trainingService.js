@@ -63,3 +63,46 @@ export async function saveExercisesToDB(userId, dateId, data) {
         await deleteDoc(ref);
     }
 }
+/* ================================================================
+    6. Übungen merken
+    - Speichert die zuletzt bearbeiteten Übungen für schnellen Zugriff
+================================================================ */
+export async function fetchUsedExercises(userId) {
+    const usedExercises = new Set();
+
+    const trainingSnapshot = await getDocs(
+        collection(db, "users", userId, "trainings")
+    );
+
+    trainingSnapshot.forEach(docItem => {
+        const data = docItem.data();
+        const exercises = data.exercises || [];
+
+        exercises.forEach(item => {
+            if (item.exercise) {
+                usedExercises.add(item.exercise);
+            }
+        });
+    });
+
+    const templateSnapshot = await getDocs(
+        collection(db, "users", userId, "templates")
+    );
+
+    templateSnapshot.forEach(docItem => {
+        const data = docItem.data();
+        const exercises = data.exercises || [];
+
+        exercises.forEach(exercise => {
+            if (typeof exercise === "string") {
+                usedExercises.add(exercise);
+            }
+
+            if (exercise.exercise) {
+                usedExercises.add(exercise.exercise);
+            }
+        });
+    });
+
+    return Array.from(usedExercises).sort();
+}
