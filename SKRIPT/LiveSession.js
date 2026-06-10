@@ -3,7 +3,7 @@
    - Zustand der aktuellen Live-Session
 ================================================================ */
 import { loadAllTemplates } from "./templates.js";
-import { saveExercises, getLastExerciseData } from "./training.js";
+import { saveExercises, getLastExerciseData, selectedDateId, setSelectedDateToday } from "./training.js";
 import { formatExerciseName } from "./exerciseUtils.js";
 let currentExercises = [];
 let workoutTitle = "";
@@ -51,7 +51,8 @@ function showGymView(id) {
     const views = [
         "view-main",
         "view-templates",
-        "view-training"
+        "view-training",
+        "view-success"
     ];
 
     views.forEach(v => {
@@ -301,6 +302,9 @@ async function addExerciseLive() {
    - Setzt die Live-Session zurück
 ================================================================ */
 async function finishSession() {
+    if (!selectedDateId) {
+    setSelectedDateToday();
+}
     const allExerciseContainers = document.querySelectorAll("[id^='sets-container-']");
     const sessionData = [];
     const durationMs = sessionStartTime ? Date.now() - sessionStartTime : 0;
@@ -339,16 +343,23 @@ async function finishSession() {
 
     try {
         await saveExercises(sessionData);
-        alert("Training erfolgreich gespeichert!");
+        const successSummary = document.getElementById("success-summary");
+if (successSummary) {
+    successSummary.innerHTML = `
+        <p><strong>Workout:</strong> ${workoutTitle}</p>
+        <p><strong>Dauer:</strong> ${durationText}</p>
+        <p><strong>Gespeicherte Sätze:</strong> ${sessionData.length}</p>
+        <p><strong>Übungen:</strong> ${new Set(sessionData.map(item => item.exercise)).size}</p>
+    `;
+}
 
-        currentExercises = [];
-        workoutTitle = "";
-        clearInterval(sessionTimerInterval);
-        sessionTimerInterval = null;
-        sessionStartTime = null;
-        showGymView("view-main");
+currentExercises = [];
+workoutTitle = "";
+clearInterval(sessionTimerInterval);
+sessionTimerInterval = null;
+sessionStartTime = null;
 
-        location.reload();
+showGymView("view-success");
     } catch (error) {
         console.error("Fehler beim Speichern der Session:", error);
         alert("Fehler beim Speichern.");

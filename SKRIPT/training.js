@@ -17,7 +17,13 @@ export let trainingDays = {};
    3. AUSGEWÄHLTES DATUM SETZEN
 ================================================================ */
 export function setSelectedDate(year, month, day) {
-    selectedDateId = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    selectedDateId =
+        `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+export function setSelectedDateToday() {
+    const today = new Date();
+
+    selectedDateId = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 }
 
 /* ================================================================

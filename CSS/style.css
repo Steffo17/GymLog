@@ -321,6 +321,50 @@ button {
 #view-training {
     padding: 16px;
 }
+.live-timer-box {
+    background: linear-gradient(145deg, rgba(56,189,248,0.12), rgba(15,23,42,0.95));
+    border: 1px solid rgba(56,189,248,0.28);
+    border-radius: 16px;
+    padding: 18px;
+    text-align: center;
+    box-shadow: 0 0 24px rgba(56,189,248,0.12);
+}
+
+#live-timer-start-btn {
+    width: 100%;
+    max-width: 340px;
+    height: 52px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 0 22px rgba(34,197,94,0.28);
+    transition: 0.2s ease;
+}
+
+#live-timer-start-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 30px rgba(34,197,94,0.38);
+}
+
+#live-timer-start-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.live-timer-box p {
+    margin: 14px 0 0 0;
+    color: var(--text-muted);
+}
+
+#live-timer-display {
+    color: #7dd3fc;
+    font-size: 1.2rem;
+}
 
 #training-title {
     font-size: 1.35rem;
@@ -610,7 +654,7 @@ button {
 ================================================================ */
 @media (max-width: 768px) {
     #content-area {
-        padding: 80px 16px 96px 16px;
+        padding: 20px 16px 96px 16px;
         width: 100%;
     }
     .gym-container {
@@ -667,7 +711,7 @@ button {
         height: 40px;
     }
     #topbar {
-    padding: max(18px, env(safe-area-inset-top)) 4px 14px 4px;
+    padding: max(8px, env(safe-area-inset-top)) 4px 14px 4px;
     gap: 8px;
     }
     #user-email-display {
