@@ -70,6 +70,9 @@ export function initAuth() {
             document.getElementById("main-Layout").style.display = "flex";
             document.getElementById("user-email-display").textContent =
                 "angemeldet als: " + user.email;
+            if (historyArea) historyArea.style.display = "none";
+            if (historyContent) historyContent.innerHTML = "";
+            if (templateListContainer) templateListContainer.innerHTML = "";
 
             if (typeof window.loadTemplateListForPlansView === "function") {
                 window.loadTemplateListForPlansView();

@@ -20,21 +20,43 @@ const today = new Date();
 ================================================================ */
 export async function initCalendar() {
     console.log("Kalender wird initialisiert...");
+    const historyArea = document.getElementById("history-detail-area");
+    const historyContent = document.getElementById("history-content");
+
+    if (historyArea) {
+        historyArea.style.display = "none";
+    }
+
+    if (historyContent) {
+        historyContent.innerHTML = "";
+    }
     Object.keys(trainingDays).forEach(key => delete trainingDays[key]);
 
     /* ================= TRAININGSTAGE LADEN ================= */
     if (currentUser) {
-        try {
-            const loadedTrainingDays = await fetchTrainingDays(currentUser.uid);
+    try {
+        const loadedTrainingDays = await fetchTrainingDays(currentUser.uid);
 
-            Object.keys(trainingDays).forEach(key => delete trainingDays[key]);
-            Object.assign(trainingDays, loadedTrainingDays);
+        Object.keys(trainingDays).forEach(key => delete trainingDays[key]);
+        Object.assign(trainingDays, loadedTrainingDays);
 
-            console.log("Trainingsdaten geladen:", trainingDays);
-        } catch (e) {
-            console.error("Fehler beim Laden der Trainingstage:", e);
-        }
+        console.log("Trainingsdaten geladen:", trainingDays);
+    } catch (e) {
+        console.error("Fehler beim Laden der Trainingstage:", e);
     }
+} else {
+    const guestTrainings = JSON.parse(localStorage.getItem("guestTrainings")) || {};
+
+    Object.keys(trainingDays).forEach(key => delete trainingDays[key]);
+
+    Object.keys(guestTrainings).forEach(dateId => {
+        if (Array.isArray(guestTrainings[dateId]) && guestTrainings[dateId].length > 0) {
+            trainingDays[dateId] = true;
+        }
+    });
+
+    console.log("Gast-Trainingsdaten geladen:", trainingDays);
+}
 
     /* ================= NAVIGATION BUTTONS ================= */
     const prevBtn = document.getElementById("prevMonth");
@@ -161,3 +183,4 @@ function openTrainingProcess(year, month, day) {
         console.error("Modal 'selection-modal' wurde im HTML nicht gefunden!");
     }
 }
+window.renderCalendar = renderCalendar;

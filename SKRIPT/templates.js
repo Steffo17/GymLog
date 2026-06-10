@@ -107,9 +107,30 @@ window.saveTemplateToFirebase = async function() {
     }
 
     if (!currentUser) {
-        alert("Bitte einloggen.");
-        return;
+    const templates = JSON.parse(localStorage.getItem("guestTemplates")) || [];
+
+    const existingIndex = templates.findIndex(t => t.name === currentWorkoutName);
+
+    const newTemplate = {
+        name: currentWorkoutName,
+        exercises: currentTemplateExercises
+    };
+
+    if (existingIndex >= 0) {
+        templates[existingIndex] = newTemplate;
+    } else {
+        templates.push(newTemplate);
     }
+
+    localStorage.setItem("guestTemplates", JSON.stringify(templates));
+
+    if (typeof window.loadTemplateListForPlansView === "function") {
+        await window.loadTemplateListForPlansView();
+    }
+
+    alert("Workout lokal gespeichert!");
+    return;
+}
 
     const ref = doc(db, "users", currentUser.uid, "templates", currentWorkoutName);
 
@@ -146,7 +167,9 @@ window.resetWorkoutBuilder = function() {
    - Für die Auswahl beim Training starten
 ================================================================ */
 export async function loadAllTemplates() {
-    if (!currentUser) return [];
+    if (!currentUser) {
+    return JSON.parse(localStorage.getItem("guestTemplates")) || [];
+}
 
     const querySnapshot = await getDocs(
         collection(db, "users", currentUser.uid, "templates")
@@ -166,7 +189,21 @@ export async function loadAllTemplates() {
    8. LIVE SESSION AUS VORLAGE STARTEN
 ================================================================ */
 window.startLiveSessionFromPlan = async function(planName) {
-    if (!currentUser) return;
+    if (!currentUser) {
+        const templates = JSON.parse(localStorage.getItem("guestTemplates")) || [];
+        const data = templates.find(t => t.name === planName);
+
+        if (!data) {
+            alert("Vorlage nicht gefunden.");
+            return;
+        }
+
+        if (typeof window.openLiveSessionWithTemplate === "function") {
+            window.openLiveSessionWithTemplate(data.name, data.exercises || []);
+        }
+
+        return;
+    }
 
     const ref = doc(db, "users", currentUser.uid, "templates", planName);
     const snap = await getDoc(ref);
@@ -177,6 +214,7 @@ window.startLiveSessionFromPlan = async function(planName) {
     }
 
     const data = snap.data();
+
     if (typeof window.openLiveSessionWithTemplate === "function") {
         window.openLiveSessionWithTemplate(data.name, data.exercises || []);
     }
@@ -185,7 +223,27 @@ window.startLiveSessionFromPlan = async function(planName) {
    9. Workout editieren
 ================================================================ */
 window.editTemplate = async function(templateName) {
-    if (!currentUser) return;
+    if (!currentUser) {
+        const templates = JSON.parse(localStorage.getItem("guestTemplates")) || [];
+        const data = templates.find(t => t.name === templateName);
+
+        if (!data) {
+            alert("Template nicht gefunden");
+            return;
+        }
+
+        currentWorkoutName = data.name;
+        currentTemplateExercises = data.exercises || [];
+
+        document.getElementById("plan-setup").classList.add("hidden");
+        document.getElementById("template-editor").classList.remove("hidden");
+
+        document.getElementById("current-workout-title").innerText =
+            "Workout bearbeiten: " + currentWorkoutName;
+
+        renderTemplateList();
+        return;
+    }
 
     const ref = doc(db, "users", currentUser.uid, "templates", templateName);
     const snap = await getDoc(ref);
@@ -200,7 +258,6 @@ window.editTemplate = async function(templateName) {
     currentWorkoutName = data.name;
     currentTemplateExercises = data.exercises || [];
 
-    // UI wechseln
     document.getElementById("plan-setup").classList.add("hidden");
     document.getElementById("template-editor").classList.remove("hidden");
 
@@ -217,13 +274,23 @@ window.editTemplate = async function(templateName) {
    10. Workout bearbeiten, starten und löschen
 ================================================================ */
 window.deleteTemplateFromFirebase = async function(templateName) {
-    if (!currentUser) {
-        alert("Bitte zuerst einloggen.");
-        return;
-    }
-
     const confirmed = confirm(`Willst du das Workout "${templateName}" wirklich löschen?`);
     if (!confirmed) return;
+
+    if (!currentUser) {
+        const templates = JSON.parse(localStorage.getItem("guestTemplates")) || [];
+        const filteredTemplates = templates.filter(t => t.name !== templateName);
+
+        localStorage.setItem("guestTemplates", JSON.stringify(filteredTemplates));
+
+        alert("Workout gelöscht!");
+
+        if (typeof window.loadTemplateListForPlansView === "function") {
+            await window.loadTemplateListForPlansView();
+        }
+
+        return;
+    }
 
     try {
         const ref = doc(db, "users", currentUser.uid, "templates", templateName);
@@ -231,7 +298,6 @@ window.deleteTemplateFromFirebase = async function(templateName) {
 
         alert("Workout gelöscht!");
 
-        // Optional: Liste neu laden
         if (typeof window.loadTemplateListForPlansView === "function") {
             await window.loadTemplateListForPlansView();
         }
@@ -245,68 +311,65 @@ window.loadTemplateListForPlansView = async function() {
     const container = document.getElementById("saved-template-list");
     if (!container) return;
 
-    if (!currentUser) {
-        container.innerHTML = "<p>Bitte zuerst einloggen.</p>";
-        return;
-    }
-
     container.innerHTML = "Lade Workouts...";
 
-    try {
+    let templates = [];
+
+    if (!currentUser) {
+        templates = JSON.parse(localStorage.getItem("guestTemplates")) || [];
+    } else {
         const querySnapshot = await getDocs(
             collection(db, "users", currentUser.uid, "templates")
         );
 
-        const templates = [];
         querySnapshot.forEach(docSnap => {
             templates.push(docSnap.data());
         });
-
-        if (templates.length === 0) {
-            container.innerHTML = "<p>Noch keine Workouts gespeichert.</p>";
-            return;
-        }
-
-        container.innerHTML = "";
-
-        templates.forEach(template => {
-            const div = document.createElement("div");
-            div.className = "template-item";
-            div.style.display = "flex";
-            div.style.justifyContent = "space-between";
-            div.style.alignItems = "center";
-
-            div.innerHTML = `
-    <div>
-        <strong>${template.name}</strong><br>
-        <small>${template.exercises.length} Übungen</small>
-    </div>
-
-    <div style="display:flex; gap:10px;">
-        <button onclick="editTemplate('${template.name}')" 
-                class="btn-gym-ghost"
-                style="width:auto;">
-            Bearbeiten
-        </button>
-        <button onclick="startLiveSessionFromPlan('${template.name}')"
-            class="btn-gym-ghost"
-            style="width:auto;">
-            Training starten
-        </button>
-        <button onclick="deleteTemplateFromFirebase('${template.name}')" 
-                class="btn-gym-ghost"
-                style="width:auto; border-color:#e74c3c; color:#e74c3c;">
-            Löschen
-        </button>
-    </div>
-`;
-
-            container.appendChild(div);
-        });
-    } catch (error) {
-        console.error("Fehler beim Laden der Workout-Liste:", error);
-        container.innerHTML = "<p>Fehler beim Laden der Workouts.</p>";
     }
+
+    if (templates.length === 0) {
+        container.innerHTML = "<p>Noch keine Workouts gespeichert.</p>";
+        return;
+    }
+
+    container.innerHTML = "";
+
+    templates.forEach(template => {
+        const div = document.createElement("div");
+        div.className = "template-item";
+        div.style.display = "flex";
+        div.style.justifyContent = "space-between";
+        div.style.alignItems = "center";
+
+        div.innerHTML = `
+            <div>
+                <strong>${template.name}</strong><br>
+                <small>${template.exercises.length} Übungen</small>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <button onclick="editTemplate('${template.name}')"
+                    class="btn-gym-ghost"
+                    style="width:auto;">
+                    Bearbeiten
+                </button>
+
+                <button onclick="startLiveSessionFromPlan('${template.name}')"
+                    class="btn-gym-ghost"
+                    style="width:auto;">
+                    Training starten
+                </button>
+
+                <button onclick="deleteTemplateFromFirebase('${template.name}')"
+                    class="btn-gym-ghost"
+                    style="width:auto; border-color:#e74c3c; color:#e74c3c;">
+                    Löschen
+                </button>
+            </div>
+        `;
+
+        container.appendChild(div);
+    });
 };
 
 /* ================================================================

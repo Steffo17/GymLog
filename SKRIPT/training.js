@@ -31,7 +31,12 @@ export function setSelectedDateToday() {
    - Holt Daten über den Service
 ================================================================ */
 export async function loadExercises() {
-    if (!currentUser || !selectedDateId) return [];
+    if (!selectedDateId) return [];
+
+    if (!currentUser) {
+        const trainings = JSON.parse(localStorage.getItem("guestTrainings")) || {};
+        return trainings[selectedDateId] || [];
+    }
 
     const data = await fetchExercises(currentUser.uid, selectedDateId);
 
@@ -52,7 +57,23 @@ export async function loadExercises() {
    - Speichert Daten über den Service
 ================================================================ */
 export async function saveExercises(data) {
-    if (!currentUser || !selectedDateId) return;
+    if (!currentUser) {
+    const trainings = JSON.parse(localStorage.getItem("guestTrainings")) || {};
+    trainings[selectedDateId] = data;
+    localStorage.setItem("guestTrainings", JSON.stringify(trainings));
+
+    if (data.length > 0) {
+        trainingDays[selectedDateId] = true;
+    } else {
+        delete trainingDays[selectedDateId];
+    }
+
+    if (typeof window.renderCalendar === "function") {
+        window.renderCalendar();
+    }
+
+    return;
+}
 
     await saveExercisesToDB(currentUser.uid, selectedDateId, data);
 
@@ -79,7 +100,9 @@ export async function deleteExercisesForSelectedDate() {
 ================================================================ */
 export async function getLastExerciseData(exerciseName) {
 
-    if (!currentUser) return null;
+    if (!currentUser) {
+    return null;
+    }
 
     const allDates = Object.keys(trainingDays);
 
