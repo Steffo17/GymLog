@@ -79,18 +79,33 @@ export function initAuth() {
             }
 
             } else {
-            document.getElementById("login-modal").style.display = "none";
-            document.getElementById("main-Layout").style.display = "flex";
+                document.getElementById("login-modal").style.display = "none";
+                document.getElementById("main-Layout").style.display = "flex";
 
-            const userDisplay = document.getElementById("user-email-display");
-            if (userDisplay) {
-                userDisplay.textContent = "Gastmodus";
-            }
+                const calendarBody = document.querySelector("#calendar-table tbody");
+                if (calendarBody) {
+                    calendarBody.innerHTML = "";
+                }
 
-            if (typeof window.showView === "function") {
-                window.showView("home-view");
+                const historyDetailArea = document.getElementById("history-detail-area");
+                if (historyDetailArea) {
+                    historyDetailArea.style.display = "none";
+                }
+
+                const historyContent = document.getElementById("history-content");
+                if (historyContent) {
+                    historyContent.innerHTML = "";
+                }
+
+                const userDisplay = document.getElementById("user-email-display");
+                if (userDisplay) {
+                    userDisplay.textContent = "Gastmodus";
+                }
+
+                if (typeof window.showView === "function") {
+                    window.showView("home-view");
+                }
             }
-        }
 
         window.dispatchEvent(new CustomEvent("auth-state-ready"));
     });
