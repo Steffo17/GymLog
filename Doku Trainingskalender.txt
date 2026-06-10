@@ -85,6 +85,7 @@ Während der Entwicklung wurden mehrere Anpassungen vorgenommen.
 Refactoring
 
 Der ursprünglich zusammenhängende JavaScript-Code wurde in mehrere Dateien aufgeteilt, um die Wartbarkeit zu verbessern.
+Außerdem wurden immer wieder Funktionen entfernt und durch neue ersetzt um Den Code übersichtlich und einfacher wartbar zu machen. 
 
 Beispiele:
 

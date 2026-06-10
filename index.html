@@ -3,91 +3,86 @@
 
 <head>
     <meta charset="UTF-8">
-
     <!-- ================================================================
        1. META & SETUP
     ================================================================ -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GymLog - Dein Trainingsplaner</title>
-
     <!-- Haupt-Stylesheet -->
     <link rel="stylesheet" href="CSS/style.css">
 </head>
 
 <body>
 
-    <!-- ================================================================
+<!-- ================================================================
    2. LOGIN BEREICH
-   - Einstiegspunkt für Nutzer
 ================================================================ -->
-<div id="login-modal" class="modal-overlay" style="display:none;">
-    <div id="login-container">
-        <h2>Willkommen bei GymLog</h2>
+    <div id="login-modal" class="modal-overlay" style="display:none;">
+        <div id="login-container">
+            <h2>Willkommen bei GymLog</h2>
 
-        <!-- LOGIN FORM -->
-        <div id="login-form">
-            <input type="email" id="login-email" placeholder="E-Mail">
-            <input type="password" id="login-password" placeholder="Passwort">
+            <!-- LOGIN FORM -->
+            <div id="login-form">
+                <input type="email" id="login-email" placeholder="E-Mail">
+                <input type="password" id="login-password" placeholder="Passwort">
 
-            <button id="login-btn" class="btn-gym-ghost">Login</button>
+                <button id="login-btn" class="btn-gym-ghost">Login</button>
 
-            <button id="forgot-password-btn" class="btn-gym-ghost" style="margin-top:10px;">
-                Passwort vergessen?
-            </button>
+                <button id="forgot-password-btn" class="btn-gym-ghost" style="margin-top:10px;">
+                    Passwort vergessen?
+                </button>
 
-            <button onclick="showRegisterForm()" class="btn-gym-ghost" style="margin-top:10px;">
-                Noch kein Konto? Registrieren
-            </button>
+                <button onclick="showRegisterForm()" class="btn-gym-ghost" style="margin-top:10px;">
+                    Noch kein Konto? Registrieren
+                </button>
 
-            <hr>
+                <hr>
 
-            <button id="google-btn" class="btn-gym-ghost">
-                Mit Google anmelden
-            </button>
-            <button id="guest-mode-btn" class="btn-gym-ghost" style="margin-top:10px;">
-                Ohne Anmeldung fortfahren
-            </button>
-        </div>
+                <button id="google-btn" class="btn-gym-ghost">
+                    Mit Google anmelden
+                </button>
+            </div>
 
-        <!-- REGISTER FORM -->
-        <div id="register-form" class="hidden">
-            <input type="email" id="register-email" placeholder="E-Mail">
-            <input type="password" id="register-password" placeholder="Passwort">
-            <input type="password" id="register-password-repeat" placeholder="Passwort wiederholen">
+            <!-- REGISTER FORM -->
+            <div id="register-form" class="hidden">
+                <input type="email" id="register-email" placeholder="E-Mail">
+                <input type="password" id="register-password" placeholder="Passwort">
+                <input type="password" id="register-password-repeat" placeholder="Passwort wiederholen">
 
-            <button id="register-btn" class="btn-gym-ghost">
-                Registrieren
-            </button>
+                <button id="register-btn" class="btn-gym-ghost">
+                    Registrieren
+                </button>
 
-            <button onclick="showLoginForm()" class="btn-gym-ghost" style="margin-top:10px;">
-                Schon ein Konto? Zum Login
-            </button>
+                <button onclick="showLoginForm()" class="btn-gym-ghost" style="margin-top:10px;">
+                    Schon ein Konto? Zum Login
+                </button>
+            </div>
         </div>
     </div>
-</div>
-    <!-- ================================================================
-       3. HAUPT-LAYOUT (nach Login sichtbar)
-       - Sidebar Navigation + Content Bereich
-    ================================================================ -->
+
+<!-- ================================================================
+   3. HAUPT-LAYOUT (nach Login sichtbar)
+   - Sidebar Navigation + Content Bereich
+================================================================ -->
     <div id="main-Layout" style="display:none;">
 
 
 <!-- ================================================================
    3.1 BOTTOM NAVIGATION SMARTPHONE
 ================================================================ -->
-<nav id="bottom-nav">
-    <button class="bottom-nav-item active" data-view="home-view">🏠<span>Start</span></button>
-    <button class="bottom-nav-item" data-view="calendar-view">📅<span>Kalender</span></button>
-    <button class="bottom-nav-item" data-view="plans-view">📋<span>Vorlagen</span></button>
-    <button class="bottom-nav-item" data-view="live-view">⚡<span>Training</span></button>
-</nav>
+        <nav id="bottom-nav">
+            <button class="bottom-nav-item active" data-view="home-view">🏠<span>Start</span></button>
+            <button class="bottom-nav-item" data-view="calendar-view">📅<span>Kalender</span></button>
+            <button class="bottom-nav-item" data-view="plans-view">📋<span>Vorlagen</span></button>
+            <button class="bottom-nav-item" data-view="live-view">⚡<span>Training</span></button>
+        </nav>
 
         <!-- ================================================================
            3.2 CONTENT AREA
            - Hier werden die verschiedenen Views geladen
         ================================================================ -->
         <main id="content-area">
-                    <!-- TOPBAR -->
+            <!-- TOPBAR -->
             <div id="topbar">
                 <span id="user-email-display"></span>
 
@@ -96,22 +91,29 @@
                 </button>
                 <button id="logout-btn-sidebar" class="topbar-login-btn">Logout</button>
             </div>
-
+            <!-- ================================================================
+               3.3 HOME VIEW
+               - Begrüßungstext & Erklärung der App
+            ================================================================ -->
             <section id="home-view" class="view active">
                 <div class="gym-card">
                     <h1>Willkommen in deinem persönlichen GymLog!</h1>
-                    <p>Diese App wurde programmiert, um ohne viel Schnickschnack deinen Trainingserfolg zu speichern.</p>
+                    <p>Diese App wurde programmiert, um ohne viel Schnickschnack deinen Trainingserfolg zu speichern.
+                    </p>
                     <p>Übungen und Pläne werden von dir selbst hinzugefügt und gespeichert.</p>
-                    <p>Im Trainingskalender siehst du deine History der vergangenen Trainingseinheiten mit allen Informationen.</p>
-                    <p>Das soll dich motivieren, deinen Fortschritt sichtbar machen und dir zeigen, was dein letzter Stand bei den Übungen war.</p>
-                    <p>Unten in der Leiste findest du deinen Trainingskalender, deine Workout-Vorlagen und dein aktives Training.</p>
+                    <p>Im Trainingskalender siehst du deine History der vergangenen Trainingseinheiten mit allen
+                        Informationen.</p>
+                    <p>Das soll dich motivieren, deinen Fortschritt sichtbar machen und dir zeigen, was dein letzter
+                        Stand bei den Übungen war.</p>
+                    <p>Unten in der Leiste findest du deinen Trainingskalender, deine Workout-Vorlagen und dein aktives
+                        Training.</p>
                     <h2>Viel Spaß beim Trainieren!</h2>
                 </div>
             </section>
             <!-- ================================================================
                4. KALENDER VIEW
                - Trainingsübersicht nach Datum
-            ================================================================ -->
+            =============================================================== -->
             <section id="calendar-view" class="view" style="display:none;">
                 <h1>Dein Kalender</h1>
 
@@ -152,8 +154,8 @@
 
 
             <!-- ================================================================
-               5. TRAININGSPLÄNE VIEW
-               - Vorlagen erstellen & bearbeiten
+                5. TRAININGSPLÄNE VIEW
+                - Vorlagen erstellen & bearbeiten
             ================================================================ -->
             <section id="plans-view" class="view" style="display:none;">
                 <h1>Workout-vorlagen</h1>
@@ -199,8 +201,8 @@
 
 
             <!-- ================================================================
-               6. LIVE SESSION VIEW
-               - Workout planen, starten und tracken
+                6. LIVE SESSION VIEW
+                - Workout planen, starten und tracken
             ================================================================ -->
             <section id="live-view" class="view" style="display:none;">
                 <div id="live-session-content" class="gym-container">
@@ -230,25 +232,6 @@
                             Abbrechen
                         </button>
                     </div>
-                    <!-- ================= WORKOUT SETUP ================= -->
-                    <div id="view-setup" class="gym-card hidden">
-                        <h2>Workout Name</h2>
-                        <input type="text" id="workout-name" placeholder="z.B. Push Day">
-                        <button onclick="goToPlanning()">Weiter</button>
-                        <button onclick="showGymView('view-main')">Zurück</button>
-                    </div>
-
-                    <!-- ================= PLANUNG ================= -->
-                    <div id="view-planning" class="gym-card hidden">
-                        <h2 id="display-workout-name">Workout</h2>
-
-                        <input type="text" id="exercise-input" placeholder="Übung eingeben...">
-                        <button onclick="addExerciseToPlan()" class="btn-gym-ghost">+ Übung hinzufügen</button>
-
-                        <ul id="planned-exercises"></ul>
-
-                        <button id="start-btn" onclick="startTraining()">🚀 Session starten</button>
-                    </div>
 
                     <!-- ================= TRAINING LIVE ================= -->
                     <div id="view-training" class="gym-card hidden">
@@ -272,49 +255,46 @@
                     </div>
                 </div>
             </section>
-
         </main>
-    </div>
 
+        <!-- ================================================================
+            7. MODALS & POPUPS
+            - Auswahl von Aktionen für Kalendertage
+        ================================================================ -->
+        <div id="selection-modal" class="modal-overlay" style="display:none;">
+            <div class="modal-content">
 
-    <!-- ================================================================
-       7. MODALS & POPUPS
-       - Auswahl von Aktionen für Kalendertage
-    ================================================================ -->
-    <div id="selection-modal" class="modal-overlay" style="display:none;">
-        <div class="modal-content">
+                <h3 id="modal-date-display">Tag auswählen</h3>
 
-            <h3 id="modal-date-display">Tag auswählen</h3>
+                <!--Aktionen -->
+                <div id="modal-step-1" class="modal-buttons">
+                    <button id="btn-start-training" class="btn-gym-ghost">⚡ Training starten</button>
+                    <button id="btn-view-data" class="btn-gym-ghost">📋 Daten ansehen</button>
+                    <button onclick="closeModal()" class="btn-gym-ghost">Schließen</button>
+                </div>
 
-            <!--Aktionen -->
-            <div id="modal-step-1" class="modal-buttons">
-                <button id="btn-start-training" class="btn-gym-ghost">⚡ Training starten</button>
-                <button id="btn-view-data" class="btn-gym-ghost">📋 Daten ansehen</button>
-                <button onclick="closeModal()" class="btn-gym-ghost">Schließen</button>
             </div>
-
         </div>
-    </div>
-    <div id="cancel-modal" class="modal-overlay" style="display:none;">
-        <div class="modal-content">
-            <h3>Training abbrechen?</h3>
-            <p>Alle nicht gespeicherten Daten gehen verloren.</p>
+        <div id="cancel-modal" class="modal-overlay" style="display:none;">
+            <div class="modal-content">
+                <h3>Training abbrechen?</h3>
+                <p>Alle nicht gespeicherten Daten gehen verloren.</p>
 
-            <button onclick="cancelSession()" class="btn-gym-ghost">
-                Ja, abbrechen
-            </button>
+                <button onclick="cancelSession()" class="btn-gym-ghost">
+                    Ja, abbrechen
+                </button>
 
-            <button onclick="closeCancelModal()" class="btn-gym-ghost">
-                Nein, zurück
-            </button>
+                <button onclick="closeCancelModal()" class="btn-gym-ghost">
+                    Nein, zurück
+                </button>
+            </div>
         </div>
-    </div>
 
 
-    <!-- ================================================================
-       8. SCRIPT EINBINDUNG
-    ================================================================ -->
-    <script type="module" src="./SKRIPT/main.js"></script>
+        <!-- ================================================================
+            8. SCRIPT EINBINDUNG
+        ================================================================ -->
+        <script type="module" src="./SKRIPT/main.js"></script>
 
 </body>
 

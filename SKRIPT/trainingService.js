@@ -64,7 +64,7 @@ export async function saveExercisesToDB(userId, dateId, data) {
     }
 }
 /* ================================================================
-    6. Übungen merken
+    5. Übungen merken
     - Speichert die zuletzt bearbeiteten Übungen für schnellen Zugriff
 ================================================================ */
 export async function fetchUsedExercises(userId) {

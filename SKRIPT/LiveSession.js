@@ -43,17 +43,6 @@ function formatDuration(ms) {
 
 
 /* ================================================================
-   2. DUMMY TEMPLATES
-   - Platzhalter-Vorlagen für gespeicherte Trainingspläne
-================================================================ */
-const dummyTemplates = [
-    { name: "Brust & Trizeps", exercises: ["Bankdrücken", "Schrägbank", "Butterfly", "Dips"] },
-    { name: "Rücken & Bizeps", exercises: ["Klimmzüge", "Rudern", "Latzug", "Hammer Curls"] },
-    { name: "Beine", exercises: ["Kniebeugen", "Beinpresse", "Wadenheben"] }
-];
-
-
-/* ================================================================
    3. VIEW MANAGEMENT
    - Steuert die Unteransichten im Live-Tab
 ================================================================ */
@@ -114,75 +103,6 @@ async function loadSavedTemplates() {
 
     showGymView("view-templates");
 }
-
-
-/* ================================================================
-   5. WORKOUT SETUP
-   - Liest den Namen ein und öffnet die Planungsansicht
-================================================================ */
-function goToPlanning() {
-
-    workoutTitle = document.getElementById("workout-name").value;
-
-    if (!workoutTitle) return alert("Name fehlt!");
-
-    document.getElementById("display-workout-name").innerText = workoutTitle;
-
-    showGymView("view-planning");
-}
-
-
-/* ================================================================
-   6. ÜBUNG HINZUFÜGEN
-   - Fügt eine Übung zur aktuellen Planung hinzu
-================================================================ */
-function addExerciseToPlan() {
-
-    const input = document.getElementById("exercise-input");
-
-    if (!input.value) return;
-
-    currentExercises.push(input.value);
-
-    renderPlanningList();
-
-    input.value = "";
-
-    document.getElementById("start-btn").style.display = "block";
-}
-
-
-/* ================================================================
-   7. PLANUNGSLISTE RENDERN
-================================================================ */
-function renderPlanningList() {
-
-    const list = document.getElementById("planned-exercises");
-    if (!list) return;
-
-    list.innerHTML = currentExercises.map((ex, i) => `
-        <li style="background:#161625; padding:10px; margin-bottom:5px; border-radius:5px; display:flex; justify-content:space-between;">
-            ${ex}
-            <span style="color:#e74c3c; cursor:pointer" onclick="removeEx(${i})">✕</span>
-        </li>
-    `).join("");
-}
-
-
-/* ================================================================
-   8. ÜBUNG ENTFERNEN
-================================================================ */
-function removeEx(i) {
-
-    currentExercises.splice(i, 1);
-
-    renderPlanningList();
-
-    if (currentExercises.length === 0) {
-        document.getElementById("start-btn").style.display = "none";
-    }
-}
-
 
 /* ================================================================
    9. TRAINING STARTEN
@@ -465,9 +385,6 @@ function cancelSession() {
 export function initLiveSession() {
     window.showGymView = showGymView;
     window.loadSavedTemplates = loadSavedTemplates;
-    window.goToPlanning = goToPlanning;
-    window.addExerciseToPlan = addExerciseToPlan;
-    window.removeEx = removeEx;
     window.startTraining = startTraining;
     window.adjustSets = adjustSets;
     window.finishSession = finishSession;
@@ -481,25 +398,8 @@ export function initLiveSession() {
 
 
 /* ================================================================
-   15. LEGACY SUBVIEW HANDLING
-   - Vorhandene alte Struktur beibehalten
+   15. LIVE-SESSION MIT VORLAGE STARTEN
 ================================================================ */
-window.showGymSubView = function(id) {
-    const subViews = [
-        "gym-view-main",
-        "gym-view-templates",
-        "gym-view-setup",
-        "gym-view-planning",
-        "gym-view-training"
-    ];
-
-    subViews.forEach(v => {
-        const el = document.getElementById(v);
-        if (el) el.classList.add("hidden");
-    });
-
-    document.getElementById(id).classList.remove("hidden");
-};
 function openLiveSessionWithTemplate(name, exercises) {
     workoutTitle = name;
     currentExercises = [...exercises];

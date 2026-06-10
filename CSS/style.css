@@ -272,36 +272,6 @@ button {
     font-family: inherit;
 }
 
-.auth-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 12px;
-}
-
-.auth-buttons button {
-    flex: 1;
-    height: 46px;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(
-        135deg,
-        #0ea5e9,
-        #2563eb
-    );
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
-    box-shadow:
-        0 0 16px rgba(56,189,248,0.18);
-}
-
-.auth-buttons button:hover {
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 0 24px rgba(56,189,248,0.28);
-}
 
 .btn-gym-ghost {
     background: transparent;
@@ -316,28 +286,6 @@ button {
 
 .btn-gym-ghost:hover {
     background: rgba(52, 152, 219, 0.08);
-    transform: translateY(-1px);
-}
-
-.btn-gym-start {
-    background: var(--success);
-    color: white;
-    font-size: 1.05rem;
-    padding: 15px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
-    transition: transform 0.2s ease, opacity 0.2s ease;
-     position: sticky;
-    bottom: 12px;
-    z-index: 50;
-    margin-top: 16px;
-    box-shadow: 0 0 22px rgba(34, 197, 94, 0.28);
-}
-
-.btn-gym-start:hover {
     transform: translateY(-1px);
 }
 #login-container {
@@ -657,30 +605,6 @@ button {
     color: var(--text-muted);
     font-size: 0.9rem;
 }
-.topbar-btn {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    border: 1px solid rgba(56,189,248,0.22);
-    background: rgba(15,23,42,0.92);
-    color: #7dd3fc;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: 0.2s ease;
-}
-.topbar-btn:hover {
-    background: rgba(56,189,248,0.12);
-}
-.settings-links {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 20px;
-}
-.settings-links a {
-    text-decoration: none;
-    text-align: center;
-}
 /* ================================================================
    10. SMARTPHONE DESIGN
 ================================================================ */
@@ -752,34 +676,5 @@ button {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-    }
-    .topbar-btn {
-        width: 38px;
-        height: 38px;
-        min-width: 38px;
-        padding: 0;
-        appearance: none;
-        -webkit-appearance: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    #settings-view .gym-card {
-        padding: 20px;
-    }
-    #settings-view h1 {
-        font-size: 2rem;
-        margin-bottom: 24px;
-    }
-    .settings-links {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-top: 14px;
-    }
-    .settings-links a {
-        width: 100%;
-        text-align: center;
-        text-decoration: none;
     }
 }

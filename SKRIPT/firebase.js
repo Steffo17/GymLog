@@ -194,18 +194,4 @@ export function initAuthUI() {
 
         await signInWithPopup(auth, provider);
     });
-    /* ================= GASTMODUS ================= */
-    document.getElementById("guest-mode-btn")?.addEventListener("click", () => {
-    document.getElementById("login-container").style.display = "none";
-    document.getElementById("main-Layout").style.display = "flex";
-
-    const userDisplay = document.getElementById("user-email-display");
-    if (userDisplay) {
-        userDisplay.textContent = "Gastmodus";
-    }
-
-    if (typeof window.showView === "function") {
-        window.showView("home-view");
-    }
-});
 }
