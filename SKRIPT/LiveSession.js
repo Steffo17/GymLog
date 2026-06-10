@@ -503,5 +503,10 @@ window.showGymSubView = function(id) {
 function openLiveSessionWithTemplate(name, exercises) {
     workoutTitle = name;
     currentExercises = [...exercises];
+
+    if (typeof window.showView === "function") {
+        window.showView("live-view");
+    }
+
     startTraining();
 }

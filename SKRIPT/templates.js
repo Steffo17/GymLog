@@ -177,7 +177,9 @@ window.startLiveSessionFromPlan = async function(planName) {
     }
 
     const data = snap.data();
-
+    console.log("Vorlage geladen:", data);
+    console.log("openLiveSessionWithTemplate vorhanden:",
+    typeof window.openLiveSessionWithTemplate);
     if (typeof window.openLiveSessionWithTemplate === "function") {
         window.openLiveSessionWithTemplate(data.name, data.exercises || []);
     }
