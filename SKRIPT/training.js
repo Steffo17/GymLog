@@ -132,6 +132,29 @@ export async function getLastExerciseData(exerciseName) {
    - Basierend auf bisherigen Einträgen
 ================================================================ */
 export async function loadUsedExercises() {
-    if (!currentUser) return [];
+    if (!currentUser) {
+        const suggestions = new Set();
+
+        const guestTrainings = JSON.parse(localStorage.getItem("guestTrainings")) || {};
+        Object.values(guestTrainings).forEach(training => {
+            training.forEach(item => {
+                if (item.exercise) {
+                    suggestions.add(item.exercise);
+                }
+            });
+        });
+
+        const guestTemplates = JSON.parse(localStorage.getItem("guestTemplates")) || [];
+        guestTemplates.forEach(template => {
+            template.exercises.forEach(exercise => {
+                if (exercise) {
+                    suggestions.add(exercise);
+                }
+            });
+        });
+
+        return Array.from(suggestions).sort();
+    }
+
     return await fetchUsedExercises(currentUser.uid);
 }

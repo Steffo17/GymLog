@@ -65,6 +65,10 @@ export function initAuth() {
     onAuthStateChanged(auth, (user) => {
         currentUser = user;
 
+        const historyArea = document.getElementById("history-detail-area");
+        const historyContent = document.getElementById("history-content");
+        const templateListContainer = document.getElementById("template-list-container");
+
         if (user) {
             document.getElementById("login-modal").style.display = "none";
             document.getElementById("main-Layout").style.display = "flex";
