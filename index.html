@@ -73,7 +73,7 @@
         <nav id="bottom-nav">
             <button class="bottom-nav-item active" data-view="home-view">🏠<span>Start</span></button>
             <button class="bottom-nav-item" data-view="calendar-view">📅<span>Kalender</span></button>
-            <button class="bottom-nav-item" data-view="plans-view">📋<span>Vorlagen</span></button>
+            <button class="bottom-nav-item" data-view="plans-view">📋<span>Workouts</span></button>
             <button class="bottom-nav-item" data-view="live-view">⚡<span>Training</span></button>
         </nav>
 
@@ -167,7 +167,7 @@
                     <input type="text" id="plan-name-input" class="gym-input" placeholder="z.B. Brust">
 
                     <button onclick="confirmWorkoutName()" class="btn-gym-ghost">
-                        Workout bestätigen
+                        Workout erstellen
                     </button>
                 </div>
 
@@ -212,7 +212,7 @@
                         <h2>Neue Session</h2>
 
                         <button class="btn-gym-ghost" onclick="openPlansView()">
-                            ➕ Workout planen
+                            ➕ Workout erstellen
                         </button>
 
                         <div style="margin: 15px 0; text-align: center; color: #888;">
@@ -220,13 +220,13 @@
                         </div>
 
                         <button class="btn-gym-ghost" onclick="loadSavedTemplates()">
-                            📋 Vorlage wählen
+                            📋 Workout-Vorlage wählen
                         </button>
                     </div>
 
                     <!-- ================= TEMPLATE AUSWAHL ================= -->
                     <div id="view-templates" class="gym-card hidden">
-                        <h2>Wähle einen Plan</h2>
+                        <h2>Wähle ein Workout</h2>
                         <div id="template-list-container"></div>
                         <button onclick="showGymView('view-main')" class="btn-gym-ghost btn-template-cancel">
                             Abbrechen
@@ -247,7 +247,7 @@
                         </div>
                         <div id="training-container"></div>
                         <button onclick="finishSession()" class="btn-gym-ghost">
-                            💾 Session beenden & speichern
+                            💾 Training beenden & speichern
                         </button>
                         <button onclick="confirmCancelSession()" class="btn-gym-ghost" style="margin-top:10px;">
                             ❌ Training abbrechen
