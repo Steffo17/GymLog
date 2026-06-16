@@ -70,6 +70,8 @@ export function initAuth() {
         const templateListContainer = document.getElementById("template-list-container");
 
         if (user) {
+            document.getElementById("show-login-btn").style.display = "none";
+            document.getElementById("logout-btn-sidebar").style.display = "block";
             document.getElementById("login-modal").style.display = "none";
             document.getElementById("main-Layout").style.display = "flex";
             document.getElementById("user-email-display").textContent =
@@ -86,6 +88,8 @@ export function initAuth() {
             }
 
            } else {
+                document.getElementById("show-login-btn").style.display = "block";
+                document.getElementById("logout-btn-sidebar").style.display = "none";
                 document.getElementById("login-modal").style.display = "none";
                 document.getElementById("main-Layout").style.display = "flex";
 
